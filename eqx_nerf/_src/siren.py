@@ -1,3 +1,6 @@
+"""Code taken (and modified) from:
+    https://github.com/lucidrains/siren-pytorch
+"""
 from typing import Optional, Literal, Union, Tuple, Callable
 from jaxtyping import Float, Array
 import math
