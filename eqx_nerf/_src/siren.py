@@ -24,9 +24,15 @@ def get_siren_init(dim: int, c: float, w0: float, is_first: bool):
 
 
 class Sine(eqx.Module):
+    """Sine activation function."""
+
     w0: float = eqx.static_field()
 
     def __init__(self, w0: float):
+        """
+        Args:
+            w0 (int): the amplitude factor for the sine activation
+        """
         self.w0 = w0
 
     def __call__(self, x: Array) -> Array:
@@ -34,7 +40,14 @@ class Sine(eqx.Module):
 
 
 class Siren(eqx.Module):
-    """Performs a linear transformation."""
+    """Performs a linear transformation.
+
+    .. math::
+
+        (a + b)^2 = a^2 + 2ab + b^2
+
+    Continue!
+    """
 
     w0: float = static_field()
     c: float = static_field()
@@ -56,6 +69,16 @@ class Siren(eqx.Module):
         *,
         key: PRNGKey,
     ):
+        """
+        Args:
+            in_features (Union[int, Literal[&quot;scalar&quot;]]): _description_
+            out_features (Union[int, Literal[&quot;scalar&quot;]]): _description_
+            key (PRNGKey): _description_
+            use_bias (bool, optional): _description_. Defaults to True.
+            is_first (bool, optional): _description_. Defaults to False.
+            w0 (float, optional): _description_. Defaults to 1.0.
+            c (float, optional): _description_. Defaults to 6.0.
+        """
         super().__init__()
         wkey, bkey = jrandom.split(key, 2)
         in_features_ = 1 if in_features == "scalar" else in_features
@@ -94,9 +117,10 @@ class Siren(eqx.Module):
 
 class SirenNet(eqx.Module):
     """Standard Multi-Layer Perceptron; also known as a feed-forward network.
-    !!! faq
-        If you get a TypeError saying an object is not a valid JAX type, see the
-            [FAQ](https://docs.kidger.site/equinox/faq/)."""
+
+    .. math:: (a + b)^2 = a^2 + 2ab + b^2
+
+    """
 
     layers: Tuple[Siren, ...]
     final_activation: Callable
@@ -122,25 +146,26 @@ class SirenNet(eqx.Module):
         key: PRNGKey,
         **kwargs,
     ):
-        """**Arguments**:
-        - `in_size`: The input size. The input to the module should be a vector of
-            shape `(in_features,)`
-        - `out_size`: The output size. The output from the module will be a vector
-            of shape `(out_features,)`.
-        - `width_size`: The size of each hidden layer.
-        - `depth`: The number of hidden layers.
-        - `activation`: The activation function after each hidden layer. Defaults to
-            ReLU.
-        - `final_activation`: The activation function after the output layer. Defaults
-            to the identity.
-        - `key`: A `jax.random.PRNGKey` used to provide randomness for parameter
-            initialisation. (Keyword only argument.)
+        """
+        Args:
+            in_size (int): The input size. The input to the module should be a vector of
+                shape (in_features,)
+            out_size (int): The output size. The output from the module will be a vector
+                of shape (out_features,).
+            width_size (int): The size of each hidden layer.
+            depth (int): The number of hidden layers.
+            activation (Callable): The activation function after each hidden layer. Defaults to
+                ReLU.
+            final_activation (Callable): The activation function after the output layer. Defaults
+                to the identity.
+            key (KEY): A (jax.random.PRNGKey) used to provide randomness for parameter
+                initialisation. (Keyword only argument.)
+
         Note that `in_size` also supports the string `"scalar"` as a special value.
         In this case the input to the module should be of shape `()`.
         Likewise `out_size` can also be a string `"scalar"`, in which case the
         output from the module will have shape `()`.
         """
-
         super().__init__(**kwargs)
         keys = jrandom.split(key, depth + 1)
         layers = []
