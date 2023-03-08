@@ -7,15 +7,6 @@ This package implements some of the standard neural field algorithms in JAX usin
 
 
 ---
-## Algorithms
-
-* SIREN
-* Modulated SIREN
-* Positional Encoding
-* Multiplicative Filter Networks
-
-
----
 ## Installation
 
 This package isn't pip-worthy (yet) but here are a few options for installation.
@@ -31,14 +22,56 @@ pip install -e .
 **Option II**: Install it from pip directly.
 
 ```bash
-pip install "git+https://github.com/jejjohnson/py_template.git"
+pip install "git+https://github.com/jejjohnson/eqx-nerf.git"
 ```
+
+---
+## Usage
+
+```python
+from equinox.nn.linear import Identity
+from eqx_nerf import SirenNet
+import jax.random as jrandom
+import random
+import jax
+
+key = jrandom.PRNGKey(random.randint(-1, 1))
+net = SirenNet(
+    in_size=2,
+    out_size=1,
+    width_size=8,
+    depth=3,
+    final_activation=Identity(),
+    w0_initial=30.0,                  # 
+    key=key
+)
+
+# vector convention
+key, init_key = jrandom.split(key, 2)
+n_dims = 2
+x = jrandom.normal(init_key, (n_dims,))
+out = net(x)   # (1,)
+
+# batch convention
+key, init_key = jrandom.split(key, 2)
+n_batch, n_dims = 10, 2
+x_batch = jrandom.normal(init_key, (n_batch, n_dims))
+out = jax.vmap(net)(x_batch)  # (10,1)
+```
+
+---
+## Algorithms
+
+* [x] SIREN - [Sitzmann et. al., 2020](https://www.vincentsitzmann.com/siren/)
+* [ ] Modulated SIREN - [Mehta et. al., 2021](https://arxiv.org/abs/2104.03960)
+* [ ] Multiplicative Filter Networks (MFN) - [Fathony et. al., 2021](https://github.com/boschresearch/multiplicative-filter-networks)
+    * [ ] Fourier Net
+    * [ ] Gabor Net
+* [ ] Neural Implicit Flows - [Pan et. al., 2023](https://arxiv.org/abs/2204.03216)
+* [ ] ResNet MFN - [Shekarforoush et. al., 2022](https://shekshaa.github.io/ResidualMFN/)
 
 
 ---
 ## Inspiration
 
-* [plum](https://github.com/wesselb/plum)
-* [GPJax](https://github.com/JaxGaussianProcesses/GPJax/tree/master)
-* [Nvidia-Merlin DataLoader](https://github.com/NVIDIA-Merlin/dataloader/tree/main)
-* [xrft](https://github.com/xgcm/xrft/tree/master)
+* [lucidrains/siren-pytorch](https://github.com/lucidrains/siren-pytorch/tree/master)

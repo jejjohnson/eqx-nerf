@@ -19,3 +19,4 @@ build/
 # Default virtual env location created by poetry
 .venv/
 \_build/
+\.vscode/
