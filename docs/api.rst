@@ -1,5 +1,5 @@
 Application Programming Interface
 =================================
 
-.. automodule:: py_template._src.utils.io
+.. automodule:: eqx_nerf._src.siren
     :members:

@@ -3,12 +3,12 @@
 
 PYTHON = python
 VERSION = 3.8
-NAME = py_name
+NAME = eqx_nerf
 ROOT = ./
 PIP = pip
 CONDA = conda
 SHELL = bash
-PKGROOT = ml_template
+PKGROOT = eqx_nerf
 TESTS = ${PKGROOT}/tests
 ENVS = ${PKGROOT}/environments
 
@@ -59,10 +59,10 @@ test:  ## Test code using pytest.
 ##@ JupyterBook
 jb_build: ## Build Jupyterbook
 	rm -rf docs/_build/
-	jupyter-book build docs --all
+	PYTHONPATH="${PKGROOT}" jupyter-book build docs --all
 
 jb_clean: ## Clean JupyterBook
-	jupyter-book clean docs
+	PYTHONPATH="${PKGROOT}" jupyter-book clean docs
 
 run_versioneer: ## run the versioneer software
 	versioneer install --vendor

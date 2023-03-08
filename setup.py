@@ -35,10 +35,10 @@ with open("README.md", encoding="utf8") as readme:
 
 
 setup(
-    name="py_template",
+    name="eqx-nerf",
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
-    packages=find_namespace_packages(include=["py_template"]),
+    packages=find_namespace_packages(include=["eqx_nerf"]),
     author="J. Emmanuel Johnson",
     author_email="jemanjohnson34@gmail.com",
     license="LICENSE",
