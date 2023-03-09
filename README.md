@@ -16,7 +16,7 @@ This package isn't pip-worthy (yet) but here are a few options for installation.
 ```bash
 https://github.com/jejjohnson/eqx-nerf.git
 cd eqx-nerf
-pip install -e .
+pip install -e .[dev, jlab, test]
 ```
 
 **Option II**: Install it from pip directly.
