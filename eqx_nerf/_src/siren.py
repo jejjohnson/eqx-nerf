@@ -57,6 +57,7 @@ class Siren(eqx.Module):
     out_features: Union[int, Literal["scalar"]] = static_field()
     use_bias: bool = static_field()
     is_first: bool = static_field()
+    activation: eqx.Module
 
     def __init__(
         self,
@@ -66,6 +67,7 @@ class Siren(eqx.Module):
         is_first: bool = False,
         w0: float = 1.0,
         c: float = 6.0,
+        activation: Optional[eqx.Module]=None,
         *,
         key: PRNGKey,
     ):
@@ -100,6 +102,7 @@ class Siren(eqx.Module):
         self.w0 = w0
         self.c = c
         self.is_first = is_first
+        self.activation = Sine(self.w0) if activation is None else activation
 
     def __call__(self, x: Array, *, key: Optional[PRNGKey] = None) -> Array:
         if self.in_features == "scalar":
@@ -112,7 +115,7 @@ class Siren(eqx.Module):
         if self.out_features == "scalar":
             assert jnp.shape(x) == (1,)
             x = jnp.squeeze(x)
-        return sine_activation(x, self.w0)
+        return self.activation(x)
 
 
 class SirenNet(eqx.Module):
@@ -123,14 +126,10 @@ class SirenNet(eqx.Module):
     """
 
     layers: Tuple[Siren, ...]
-    final_activation: Callable
     in_size: Union[int, Literal["scalar"]] = static_field()
     out_size: Union[int, Literal["scalar"]] = static_field()
     width_size: int = static_field()
     depth: int = static_field()
-    w0_init: float = static_field()
-    w0: float = static_field()
-    c: float = static_field()
 
     def __init__(
         self,
@@ -170,23 +169,20 @@ class SirenNet(eqx.Module):
         keys = jrandom.split(key, depth + 1)
         layers = []
         if depth == 0:
-            layers.append(Siren(in_size, out_size, w0=w0_initial, c=c, key=keys[0]))
+            layers.append(Siren(in_size, out_size, w0=w0_initial, c=c, is_first=True, key=keys[0]))
         else:
-            layers.append(Siren(in_size, width_size, w0=w0_initial, c=c, key=keys[0]))
+            layers.append(Siren(in_size, width_size, w0=w0_initial, c=c, is_first=True, key=keys[0]))
             for i in range(depth - 1):
                 layers.append(
                     Siren(width_size, width_size, w0=w0, c=c, key=keys[i + 1])
                 )
-            layers.append(Siren(width_size, out_size, w0=w0, c=c, key=keys[-1]))
+            layers.append(Siren(width_size, out_size, w0=w0, c=c, activation=Identity(), key=keys[-1]))
         self.layers = tuple(layers)
         self.in_size = in_size
         self.out_size = out_size
         self.width_size = width_size
         self.depth = depth
-        self.final_activation = final_activation
-        self.w0_init = w0_initial
-        self.w0 = w0
-        self.c = c
+
 
     def __call__(self, x: Array, *, key: Optional[PRNGKey] = None) -> Array:
         """**Arguments:**
@@ -200,5 +196,4 @@ class SirenNet(eqx.Module):
         for layer in self.layers[:-1]:
             x = layer(x)
         x = self.layers[-1](x)
-        x = self.final_activation(x)
         return x
