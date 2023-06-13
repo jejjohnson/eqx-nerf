@@ -1,9 +1,9 @@
-# Neural Fields with JAX 
+# Spatial Temporal Neural Fields with JAX 
 
 [![codecov](https://codecov.io/gh/jejjohnson/eqx-nerf/branch/master/graph/badge.svg?token=DM1DRDASU2)](https://codecov.io/gh/jejjohnson/eqx-nerf)
 [![CodeFactor](https://www.codefactor.io/repository/github/jejjohnson/eqx-nerf/badge)](https://www.codefactor.io/repository/github/jejjohnson/eqx-nerf)
 
-This package implements some of the standard neural field algorithms in JAX using the `equinox` backend.
+This package implements some of the standard neural field algorithms in JAX using the `equinox` backend. I especially focus on spatiotemporal applications.
 
 
 ---
@@ -63,10 +63,10 @@ out = jax.vmap(net)(x_batch)  # (10,1)
 ## Algorithms
 
 * [x] SIREN - [Sitzmann et. al., 2020](https://www.vincentsitzmann.com/siren/)
-* [ ] Modulated SIREN - [Mehta et. al., 2021](https://arxiv.org/abs/2104.03960)
-* [ ] Multiplicative Filter Networks (MFN) - [Fathony et. al., 2021](https://github.com/boschresearch/multiplicative-filter-networks)
-    * [ ] Fourier Net
-    * [ ] Gabor Net
+* [X] Modulated SIREN - [Mehta et. al., 2021](https://arxiv.org/abs/2104.03960)
+* [X] Multiplicative Filter Networks (MFN) - [Fathony et. al., 2021](https://github.com/boschresearch/multiplicative-filter-networks)
+    * [X] Fourier Net
+    * [X] Gabor Net
 * [ ] Neural Implicit Flows - [Pan et. al., 2023](https://arxiv.org/abs/2204.03216)
 * [ ] ResNet MFN - [Shekarforoush et. al., 2022](https://shekshaa.github.io/ResidualMFN/)
 

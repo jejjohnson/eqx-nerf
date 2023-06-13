@@ -21,3 +21,5 @@ build/
 \_build/
 \.vscode/
 \.ipynb_checkpoints/
+
+.DS_Store
