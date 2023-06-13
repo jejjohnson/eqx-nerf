@@ -1,4 +1,4 @@
-from eqx_nerf._src.actiavations import ReLU, Sine, Swish, Tanh
+from eqx_nerf._src.activations import ReLU, Sine, Swish, Tanh
 from eqx_nerf._src.base import (
     LatentNerF,
     NerF,
@@ -22,6 +22,7 @@ from eqx_nerf._src.siren import (
     Siren,
     SirenNet,
 )
+
 
 __all__ = [
     "Sine",

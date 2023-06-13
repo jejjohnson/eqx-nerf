@@ -29,6 +29,7 @@ equinox = "^0.10.2"
 einops = "^0.6.1"
 jaxtyping = "^0.2.0"
 beartype = "^0.14.0"
+urllib3 = "1.26.15"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.3.1"
